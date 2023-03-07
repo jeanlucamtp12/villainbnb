@@ -7,24 +7,8 @@ const router = express.Router();
 
 
 
-/*const validaDados = (req, res) => {
-
-    if (req.body.titulo == req.body.nome_fachada) {
-        return res.status(400).send({ error: 'Nome da fachada deve ser diferente do titulo!' });
-    }
-
-    if ((req.body.cidade).toLowerCase() != 'nova york' && (req.body.cidade).toLowerCase() != 'rio de janeiro' && (req.body.cidade).toLowerCase() != 'tóquio') {
-        return res.status(400).send({ error: 'Essa cidade não está no catalogo!' });
-    }
-
-    if ((req.body.tecnologias).toLowerCase() != 'laboratório de nanotecnologia' && (req.body.tecnologias).toLowerCase() != 'jardim de ervas venenosas' && (req.body.tecnologias).toLowerCase() != 'estande de tiro' && (req.body.tecnologias).toLowerCase() != 'academia de parkour') {
-        return res.status(400).send({ error: 'Essa tecnologia não está no catalogo!' });
-    }
-}*/
-
 router.post('/register', async (req, res) => {
 
-    //validaDados(req, res);
 
     if (req.body.titulo == req.body.nome_fachada) {
         return res.status(400).send({ error: 'Nome da fachada deve ser diferente do titulo!' });
@@ -86,10 +70,28 @@ router.put('/:id', async (req, res) => {
 
 
 
-router.get('/', async (req, res) => {
+router.get('/listar', async (req, res) => {
 
-    const busca = await User.find().select(['-nome_fachada']);
-    return res.json(busca);
+    const titulo = req.query['titulo'];
+    const cidade = req.query['cidade'];
+    const tecnologia = req.query['tecnologia'];
+
+    if(titulo == undefined && cidade == undefined && tecnologia == undefined){
+        const busca = await User.find().select(['-nome_fachada']);
+        return res.json(busca);
+    }else{
+        if(titulo){
+            const buscaTitulo = await User.find({'titulo': titulo}).select(['-nome_fachada']);
+            return res.json(buscaTitulo);
+        }else if (cidade){
+            const buscaCidade = await User.find({'cidade': cidade}).select(['-nome_fachada']);
+            return res.json(buscaCidade);
+        }else{
+            const buscaTec = await User.find({'tecnologia': tecnologia}).select(['-nome_fachada']);
+            return res.json(buscaTec);
+        }       
+    }
+
 
 });
 
@@ -105,8 +107,6 @@ router.delete('/:id', async (req, res) =>{
 
 router.post('/:titulo/:nome_fachada', async (req, res) => {
 
-
-    
 
     const {titulo} = req.params;
     const {senha} = req.params;
