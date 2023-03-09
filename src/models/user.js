@@ -1,5 +1,6 @@
 const mongoose = require('../database');
 
+//definição dos schemas e atributos do banco de dados
 const UserSchema = new mongoose.Schema ({
 
     titulo: {
